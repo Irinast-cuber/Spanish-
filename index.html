@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Español Планер | Прогресс A1–B2</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --border: #e9ecef;
+    --text: #212529;
+    --text-dim: #6c757d;
+    --text-faint: #adb5bd;
+    --accent: #c60b1e;      /* испанский красный */
+    --accent-light: #fdecee;
+    --gold: #f4b400;
+    --gold-light: #fff8e1;
+    --green: #2a9d8f;
+    --green-light: #e6fcf5;
+    --red: #e63946;
+    --blue: #4dabf7;
+    --purple: #9775fa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding-bottom: 80px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--card);
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    gap: 10px;
+  }
+
+  .logo { font-size: 16px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+  .header-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .badge-mini {
+    background: var(--bg); padding: 4px 10px; border-radius: 20px;
+    font-size: 11px; color: var(--text-dim); font-weight: 500;
+  }
+  .badge-mini.fire { background: var(--gold-light); color: #b08800; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 30;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  nav button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 12px 4px 10px;
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    transition: color 0.15s;
+  }
+
+  nav button .icon { font-size: 20px; line-height: 1; }
+  nav button.active { color: var(--accent); font-weight: 600; }
+  nav button.active .icon { transform: scale(1.1); }
+
+  /* MAIN */
+  main { max-width: 640px; margin: 0 auto; padding: 12px; }
+
+  .tab { display: none; }
+  .tab.active { display: block; animation: fade 0.2s; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title .meta { font-size: 11px; font-weight: 400; color: var(--text-dim); }
+
+  /* INPUTS */
+  input[type="text"], input[type="number"], input[type="time"], input[type="date"], textarea, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    background: #fafbfc;
+    color: var(--text);
+    transition: all 0.15s;
+    -webkit-appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--accent); background: #fff;
+    box-shadow: 0 0 0 3px rgba(198,11,30,0.08);
+  }
+  textarea { resize: vertical; min-height: 60px; line-height: 1.4; }
+
+  label.field-label {
+    display: block; font-size: 11px; color: var(--text-dim);
+    margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 500;
+  }
+
+  .row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 100px; }
+  .row:last-child { margin-bottom: 0; }
+
+  /* PROGRESS BAR */
+  .progress-wrap { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .progress-bar { flex: 1; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), #ff6b6b);
+    border-radius: 4px; transition: width 0.4s ease;
+  }
+  .progress-fill.green { background: linear-gradient(90deg, var(--green), #52b788); }
+  .progress-text { font-size: 12px; font-weight: 600; color: var(--accent); min-width: 35px; text-align: right; }
+  .progress-text.green { color: var(--green); }
+
+  /* TASKS */
+  .task-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-item input[type="checkbox"] {
+    width: 20px; height: 20px; margin-top: 2px;
+    accent-color: var(--green); cursor: pointer; flex-shrink: 0;
+  }
+  .task-item span { font-size: 14px; flex: 1; word-break: break-word; }
+  .task-item input:checked + span { text-decoration: line-through; color: var(--text-faint); }
+
+  .task-del {
+    background: transparent; border: none; color: var(--text-faint);
+    font-size: 18px; padding: 0 4px; cursor: pointer; align-self: center;
+  }
+  .task-del:hover { color: var(--red); }
+
+  /* POMODORO */
+  .pomodoro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 420px) { .pomodoro-grid { grid-template-columns: 1fr; } }
+
+  .pomo-card {
+    background: #fafbfc; border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px;
+  }
+  .pomo-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text-dim);
+  }
+  .pomo-head .num { color: var(--accent); }
+  .time-row { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+  .time-row input { padding: 6px 8px; font-size: 12px; text-align: center; }
+  .time-row .sep { color: var(--text-faint); font-size: 12px; }
+
+  /* BUTTONS */
+  .btn {
+    background: var(--accent); color: white; border: none;
+    padding: 12px 16px; border-radius: 10px; font-family: inherit;
+    font-size: 14px; font-weight: 600; cursor: pointer; width: 100%;
+    transition: all 0.15s; margin-top: 8px;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-outline {
+    background: transparent; border: 1.5px dashed var(--border); color: var(--text-dim);
+    padding: 10px; font-weight: 500;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .btn-success { background: var(--green); }
+  .btn-danger { background: var(--red); }
+  .btn-gray { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+
+  /* STATS */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    margin-bottom: 12px;
+  }
+  .stat-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px;
+  }
+  .stat-box .label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+  .stat-box .value { font-size: 22px; font-weight: 700; line-height: 1; }
+  .stat-box .value small { font-size: 12px; font-weight: 400; color: var(--text-faint); }
+  .stat-box.accent .value { color: var(--accent); }
+  .stat-box.green .value { color: var(--green); }
+  .stat-box.blue .value { color: var(--blue); }
+  .stat-box.purple .value { color: var(--purple); }
+
+  /* CHART */
+  .chart {
+    display: flex; align-items: flex-end; gap: 4px;
+    height: 120px; padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .chart-bar {
+    flex: 1; background: linear-gradient(180deg, var(--accent), #ff6b6b);
+    border-radius: 4px 4px 0 0; min-height: 2px; position: relative;
+    transition: opacity 0.15s;
+  }
+  .chart-bar:hover { opacity: 0.8; }
+  .chart-bar .bar-label {
+    position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
+    font-size: 9px; color: var(--text-faint); white-space: nowrap;
+  }
+  .chart-wrap { padding-bottom: 22px; }
+
+  /* HISTORY LIST */
+  .history-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; transition: all 0.15s; gap: 10px;
+  }
+  .history-item:hover { border-color: var(--accent); transform: translateX(2px); }
+  .history-item .date-main { font-size: 14px; font-weight: 600; }
+  .history-item .date-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .history-item .score {
+    font-size: 16px; font-weight: 700; color: var(--accent);
+    flex-shrink: 0;
+  }
+  .history-item .score.good { color: var(--green); }
+  .history-item .score.low { color: var(--red); }
+
+  .empty-state {
+    text-align: center; padding: 40px 20px; color: var(--text-dim);
+    font-size: 14px;
+  }
+  .empty-state .emoji { font-size: 40px; display: block; margin-bottom: 12px; }
+
+  /* MODAL */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 100; display: none; align-items: flex-end; justify-content: center;
+    animation: fadeIn 0.2s;
+  }
+  .modal-backdrop.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--card); width: 100%; max-width: 640px;
+    max-height: 88vh; overflow-y: auto;
+    border-radius: 16px 16px 0 0; padding: 20px;
+    animation: slideUp 0.25s;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+  .modal-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+  .modal-head h2 { font-size: 17px; }
+  .modal-close {
+    background: var(--bg); border: none; width: 32px; height: 32px;
+    border-radius: 50%; font-size: 18px; cursor: pointer; color: var(--text-dim);
+  }
+
+  .modal-section {
+    margin-bottom: 14px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-section:last-child { border-bottom: none; }
+  .modal-section h3 { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; font-weight: 600; }
+  .modal-section p { font-size: 14px; margin-bottom: 4px; }
+  .modal-section p.empty { color: var(--text-faint); font-style: italic; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--text); color: white; padding: 10px 20px;
+    border-radius: 20px; font-size: 13px; font-weight: 500;
+    opacity: 0; transition: all 0.3s; z-index: 200; pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* SECTION TITLE */
+  h2.section { font-size: 16px; font-weight: 700; margin: 16px 4px 10px; color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🇪🇸 Español Планер</div>
+  <div class="header-badges">
+    <span class="badge-mini fire" id="streakBadge">🔥 0</span>
+    <span class="badge-mini" id="wordsBadge">0 / 3000</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ========== TODAY TAB ========== -->
+  <div class="tab active" id="tab-today">
+
+    <div class="card">
+      <label class="field-label">Дата</label>
+      <input type="date" id="currentDate">
+      <div style="font-size:11px; color:var(--text-dim); margin-top:6px;">
+        Можно открыть и отредактировать любой прошлый день
+      </div>
+    </div>
+
+    <!-- MONTHLY GOAL -->
+    <div class="card">
+      <div class="card-title">
+        🎯 Главная цель месяца
+        <span class="meta" id="monthlyDeadlineMeta"></span>
+      </div>
+      <label class="field-label">Цель</label>
+      <input type="text" id="monthlyGoal" placeholder="Например: Пройти A2 и сдать пробный DELE на 80%" style="margin-bottom:10px;">
+      <div class="row">
+        <div>
+          <label class="field-label">Прогресс (%)</label>
+          <input type="number" id="monthlyProgress" min="0" max="100" placeholder="15">
+        </div>
+        <div>
+          <label class="field-label">Дедлайн</label>
+          <input type="text" id="monthlyDeadline" placeholder="28.02.2027">
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="monthlyBar"></div></div>
+        <div class="progress-text" id="monthlyText">0%</div>
+      </div>
+    </div>
+
+    <!-- WEEKLY GOALS -->
+    <div class="card">
+      <div class="card-title">📅 Еженедельные цели</div>
+      <div class="week-grid" style="display:grid; grid-template-columns:1fr; gap:10px;">
+        <div style="background:#fafbfc; border:1px solid var(--border); border-radius:8px; padding:10px;">
+          <label class="field-label">Неделя 1 — Фонетика и A1</label>
+          <input type="text" id="w1text" placeholder="Звуки r/rr, ll, ñ, артикли, presente (ser/estar/tener)" style="margin-bottom:8px; font-size:13px;">
+          <div class="progress-wrap" style="margin:0;">
+            <div class="progress-bar"><div class="progress-fill green" id="w1bar"></div></div>
+            <div class="progress-text green" id="w1pct">0%</div>
+          </div>
+          <input type="number" id="w1progress" min="0" max="100" placeholder="Прогресс %" style="margin-top:8px; font-size:13px;">
+        </div>
+        <div style="background:#fafbfc; border:1px solid var(--border); border-radius:8px; padding:10px;">
+          <label class="field-label">Неделя 2 — Грамматика</label>
+          <input type="text" id="w2text" placeholder="Pretérito indefinido, местоимения (lo/la/los), вопросительные формы" style="margin-bottom:8px; font-size:13px;">
+          <div class="progress-wrap" style="margin:0;">
+            <div class="progress-bar"><div class="progress-fill green" id="w2bar"></div></div>
+            <div class="progress-text green" id="w2pct">0%</div>
+          </div>
+          <input type="number" id="w2progress" min="0" max="100" placeholder="Прогресс %" style="margin-top:8px; font-size:13px;">
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW WORDS TODAY -->
+    <div class="card">
+      <div class="card-title">📖 Новые слова сегодня</div>
+      <div class="row">
+        <div>
+          <label class="field-label">Выучено слов</label>
+          <input type="number" id="newWords" min="0" placeholder="15">
+        </div>
+        <div>
+          <label class="field-label">Грамматика / правило</label>
+          <input type="text" id="grammarText" placeholder="Pretérito indefinido правильных глаголов">
+        </div>
+      </div>
+    </div>
+
+    <!-- TASKS -->
+    <div class="card">
+      <div class="card-title">📌 Цели на день</div>
+      <div id="tasksList"></div>
+      <button class="btn btn-outline" onclick="addTask()">+ Добавить задачу</button>
+    </div>
+
+    <!-- POMODOROS -->
+    <div class="card">
+      <div class="card-title">🍅 Помидоры <span class="meta">заполняй после каждого</span></div>
+      <div class="pomodoro-grid" id="pomodorosList"></div>
+    </div>
+
+    <!-- REFLECTION -->
+    <div class="card">
+      <div class="card-title">🌙 Вечерняя рефлексия</div>
+      <div class="row">
+        <div>
+          <label class="field-label">Итог дня</label>
+          <input type="text" id="refWord" placeholder="Продуктивно / Тяжело">
+        </div>
+        <div>
+          <label class="field-label">Оценка 1–5</label>
+          <input type="number" id="refScore" min="1" max="5" placeholder="4">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label class="field-label">Время занятий (мин)</label>
+          <input type="number" id="refTime" placeholder="150">
+        </div>
+        <div>
+          <label class="field-label">Что повторить завтра</label>
+          <input type="text" id="refReview" placeholder="Pretérito indefinido, артикли">
+        </div>
+      </div>
+      <label class="field-label" style="margin-top:8px;">Ошибки / что не получилось</label>
+      <textarea id="refMistakes" placeholder="1. Путаю ser/estar&#10;2. Забыл слово recibir"></textarea>
+    </div>
+
+    <!-- TEST / WEEK RESULTS -->
+    <div class="card">
+      <div class="card-title">📝 Суббота — тестовый день</div>
+      <div class="row">
+        <div><label class="field-label">Comprensión auditiva /20</label><input type="number" id="testListening" placeholder="18"></div>
+        <div><label class="field-label">Comprensión de lectura /20</label><input type="number" id="testReading" placeholder="16"></div>
+      </div>
+      <div class="row">
+        <div><label class="field-label">Léxico /30</label><input type="number" id="testVocab" placeholder="25"></div>
+        <div><label class="field-label">Итог %</label><input type="number" id="testTotal" placeholder="85"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 Воскресенье — итоги недели</div>
+      <div class="row">
+        <div><label class="field-label">Слов за неделю</label><input type="number" id="weekWords" placeholder="70"></div>
+        <div><label class="field-label">Знаю твёрдо</label><input type="number" id="weekSolid" placeholder="55"></div>
+      </div>
+      <label class="field-label">Главная победа недели</label>
+      <textarea id="weekVictory" placeholder="Впервые понял подкаст Español con Juan без субтитров"></textarea>
+      <label class="field-label" style="margin-top:8px;">Что изменить на следующей неделе</label>
+      <textarea id="weekAdjust" placeholder="Добавить 10 мин аудирования"></textarea>
+    </div>
+
+    <button class="btn btn-success" onclick="saveDay()">💾 Сохранить день</button>
+    <div style="height:20px;"></div>
+
+  </div>
+
+  <!-- ========== HISTORY TAB ========== -->
+  <div class="tab" id="tab-history">
+    <h2 class="section">📚 История дней</h2>
+    <div id="historyList"></div>
+  </div>
+
+  <!-- ========== PROGRESS TAB ========== -->
+  <div class="tab" id="tab-progress">
+    <h2 class="section">📈 Общий прогресс</h2>
+
+    <div class="stats-grid">
+      <div class="stat-box accent">
+        <div class="label">Всего слов</div>
+        <div class="value" id="statTotalWords">0 <small>/ 3000</small></div>
+      </div>
+      <div class="stat-box green">
+        <div class="label">Стрик</div>
+        <div class="value" id="statStreak">0 <small>дней</small></div>
+      </div>
+      <div class="stat-box blue">
+        <div class="label">Средняя оценка</div>
+        <div class="value" id="statAvgScore">— <small>/ 5</small></div>
+      </div>
+      <div class="stat-box purple">
+        <div class="label">Помидоров всего</div>
+        <div class="value" id="statPomos">0</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Слова за последние 14 дней</div>
+      <div class="chart-wrap">
+        <div class="chart" id="chartWords"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Оценки за последние 14 дней</div>
+      <div class="chart-wrap">
+        <div class="chart" id="chartScores"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Прогресс до DELE B2</div>
+      <div class="progress-wrap">
+        <div class="progress-bar" style="height:12px;"><div class="progress-fill" id="overallBar"></div></div>
+        <div class="progress-text" id="overallPct">0%</div>
+      </div>
+      <div style="font-size:12px; color:var(--text-dim); margin-top:8px;">
+        A1 ≈ 500 · A2 ≈ 1000 · B1 ≈ 2000 · B2 ≈ 3000 слов
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SETTINGS TAB ========== -->
+  <div class="tab" id="tab-settings">
+    <h2 class="section">⚙️ Настройки</h2>
+
+    <div class="card">
+      <div class="card-title">💾 Резервная копия</div>
+      <div style="font-size:13px; color:var(--text-dim); margin-bottom:12px;">
+        Скачай файл с данными, чтобы не потерять историю при чистке браузера или смене телефона.
+      </div>
+      <button class="btn btn-gray" onclick="exportData()">⬇️ Скачать бэкап (.json)</button>
+      <button class="btn btn-gray" onclick="document.getElementById('importFile').click()">⬆️ Загрузить бэкап</button>
+      <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+    </div>
+
+    <div class="card">
+      <div class="card-title">🗑️ Опасная зона</div>
+      <div style="font-size:13px; color:var(--text-dim); margin-bottom:12px;">
+        Удалит всю историю, все записи и настройки. Восстановить не получится.
+      </div>
+      <button class="btn btn-danger" onclick="resetAll()">Удалить все данные</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">ℹ️ О планере</div>
+      <div style="font-size:13px; color:var(--text-dim); line-height:1.6;">
+        План на A1–B2: октябрь 2026 — июнь 2027.<br>
+        Ориентир по словам: 3000 активных.<br><br>
+        Все данные хранятся в браузере (localStorage), ничего не отправляется в интернет.<br><br>
+        Для возврата к прошлому дню — вкладка <b>История</b> или выбери дату вверху.
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav>
+  <button class="active" data-tab="today">
+    <span class="icon">📝</span><span>Сегодня</span>
+  </button>
+  <button data-tab="history">
+    <span class="icon">📚</span><span>История</span>
+  </button>
+  <button data-tab="progress">
+    <span class="icon">📈</span><span>Прогресс</span>
+  </button>
+  <button data-tab="settings">
+    <span class="icon">⚙️</span><span>Ещё</span>
+  </button>
+</nav>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <h2 id="modalTitle">День</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==========================================
+// ДАННЫЕ
+// ==========================================
+const STORAGE_KEY = 'espanol_planner_v2';
+
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+const DEFAULT_TASKS = [
+  'Выучить 15 новых слов (Anki)',
+  'Разобрать грамматику дня',
+  'Аудирование: 30 мин (Español con Juan / Notes in Spanish)',
+  'Прочитать текст вслух 2 раза'
+];
+
+const DEFAULT_POMODOROS = [
+  { num: 1, start: '09:00', end: '09:35', task: 'Anki + 15 новых слов', note: '' },
+  { num: 2, start: '09:45', end: '10:20', task: 'Грамматика + 10 предложений', note: '' },
+  { num: 3, start: '10:30', end: '11:00', task: 'Аудирование (диалог/подкаст)', note: '' },
+  { num: 4, start: '11:10', end: '11:40', task: 'Письмо / монолог 15 мин', note: '' }
+];
+
+let state = {
+  days: {},
+  settings: {
+    monthlyGoal: '',
+    monthlyProgress: 0,
+    monthlyDeadline: '',
+    w1text: '', w1progress: 0,
+    w2text: '', w2progress: 0
+  }
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = { ...state, ...parsed };
+      state.settings = { ...state.settings, ...(parsed.settings || {}) };
+    }
+  } catch(e) { console.error('Load error:', e); }
+}
+
+function persist() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ==========================================
+// ДЕНЬ
+// ==========================================
+function getDay(date) {
+  if (!state.days[date]) {
+    state.days[date] = {
+      tasks: DEFAULT_TASKS.map((t, i) => ({ id: 't' + i + '_' + Date.now(), text: t, done: false })),
+      newWords: 0,
+      grammarText: '',
+      pomodoros: DEFAULT_POMODOROS.map(p => ({ ...p })),
+      refWord: '', refScore: '', refTime: '', refReview: '', refMistakes: '',
+      testListening: '', testReading: '', testVocab: '', testTotal: '',
+      weekWords: '', weekSolid: '', weekVictory: '', weekAdjust: '',
+      savedAt: null
+    };
+  }
+  return state.days[date];
+}
+
+// ==========================================
+// РЕНДЕР
+// ==========================================
+let currentDate = todayISO();
+
+function renderAll() {
+  document.getElementById('currentDate').value = currentDate;
+  const day = getDay(currentDate);
+
+  document.getElementById('monthlyGoal').value = state.settings.monthlyGoal || '';
+  document.getElementById('monthlyProgress').value = state.settings.monthlyProgress || '';
+  document.getElementById('monthlyDeadline').value = state.settings.monthlyDeadline || '';
+  document.getElementById('w1text').value = state.settings.w1text || '';
+  document.getElementById('w1progress').value = state.settings.w1progress || '';
+  document.getElementById('w2text').value = state.settings.w2text || '';
+  document.getElementById('w2progress').value = state.settings.w2progress || '';
+
+  document.getElementById('newWords').value = day.newWords || '';
+  document.getElementById('grammarText').value = day.grammarText || '';
+  document.getElementById('refWord').value = day.refWord || '';
+  document.getElementById('refScore').value = day.refScore || '';
+  document.getElementById('refTime').value = day.refTime || '';
+  document.getElementById('refReview').value = day.refReview || '';
+  document.getElementById('refMistakes').value = day.refMistakes || '';
+  document.getElementById('testListening').value = day.testListening || '';
+  document.getElementById('testReading').value = day.testReading || '';
+  document.getElementById('testVocab').value = day.testVocab || '';
+  document.getElementById('testTotal').value = day.testTotal || '';
+  document.getElementById('weekWords').value = day.weekWords || '';
+  document.getElementById('weekSolid').value = day.weekSolid || '';
+  document.getElementById('weekVictory').value = day.weekVictory || '';
+  document.getElementById('weekAdjust').value = day.weekAdjust || '';
+
+  renderTasks(day);
+  renderPomodoros(day);
+  renderBars();
+  renderHeaderBadges();
+}
+
+function renderTasks(day) {
+  const container = document.getElementById('tasksList');
+  container.innerHTML = '';
+  day.tasks.forEach(task => {
+    const item = document.createElement('div');
